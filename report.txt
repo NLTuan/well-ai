@@ -1,10 +1,1 @@
-What makes you feel like you've died?
-i fell down the stairs
-Can you describe your current physical condition? Are there any unusual symptoms or sensations?
-its a little tingly
-What are you feeling emotionally right now? Are you experiencing any anxiety, fear or sadness?
-i am scared
-Physical sensations after falling: pain everywhere
-Can you tell me more about what happened after you fainted? Did anything happen when you came to or was it a gradual recovery?
-"
-    + "fainted
+Patient is experiencing severe spine pain (10/10) with related symptoms of numbness/tingling in extremities and bladder control issues.
