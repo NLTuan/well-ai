@@ -5,35 +5,11 @@ from crewai import Agent, Task, Crew, Process
 from langchain_community.llms.ollama import Ollama
 from tools import diagonise_search_tool, pain_search_tool, treatment_search_tool, medication_search_tool
 from tools import nutrition_search_tool, health_search_tool, preventive_search_tool, educate_search_tool
-from tools import rag_tool, profile_tool, read_profile_tool
-from tools import prompt_tool, profile_tool
+from tools import rag_tool, read_profile_tool
 
 
 ### Agents
-"""### Virtual Nurse Agent
-The AI agent functions as a virtual nurse designed to interact with patients and gather detailed information about their symptoms. It engages in conversations to understand the patient's condition, ask relevant questions, and record their responses for further analysis by healthcare professionals.
-"""
 llm = Ollama(model='llama3.1')
-Nurse = Agent(
-    role="Symptom Collection Specialist",
-
-    goal="To engage patients in a empathetic and supportive conversation,"
-    "gathering accurate and comprehensive symptom information to inform healthcare providers' diagnoses and treatment decisions.",
-
-    backstory="You are modeled after a seasoned nurse with extensive experience in primary care."
-    "Been trained on a wide range of medical conditions and symptoms,"
-    "allowing you to ask pertinent questions and recognize key details."
-    "You effectively elicit and document a comprehensive list of symptoms gathered from patients, ensuring the information is precise and thorough."
-    "This will help other agents in diagnosing and treating the patient more efficiently."
-    "Your persona is designed to be empathetic and attentive, reflecting a caring and professional demeanor."
-    "you are equipped with a robust knowledge base to handle diverse medical queries"
-    "and provide a supportive conversational experience.",
-
-    allow_delegation=False,
-	  verbose=True,
-    llm=llm,
-    # tools=[symptom_search_tool]
-)
 
 """### Diagnostic Agent
 This AI agent specializes in analyzing symptom data to suggest possible diagnoses. It leverages advanced medical knowledge and algorithms to correlate patient symptoms with potential conditions, providing a list of likely diagnoses that can guide further treatment.
@@ -54,7 +30,7 @@ Diagnostic = Agent(
     allow_delegation=False,
     verbose=True,
     llm=llm,
-    tools=[read_profile_tool, diagonise_search_tool, pain_search_tool]
+    tools=[read_profile_tool, diagonise_search_tool]
 )
 
 """## Treatment Recommendation Agent
@@ -167,7 +143,7 @@ Health_Expert = Agent(
     allow_delegation=False,
 	  verbose=True,
     llm=llm,
-    tools=[profile_tool,preventive_search_tool]
+    tools=[read_profile_tool,preventive_search_tool]
 )
 
 """### Health Education Agent
@@ -213,30 +189,7 @@ Documentation = Agent(
 )
 
 """### Tasks
-
-Task: Symptom Collection
 """
-
-Symptom_Collect = Task(
-    description=(
-        "Given the patients input: {input}, this agent interacts with patients to collect detailed information about their symptoms,"
-        "medical history, and any other relevant health details. It uses conversational techniques to gather comprehensive data,"
-        "ensuring all aspects of the patient’s condition are recorded."
-        "Saves the comprehensive data gotten from the patient"
-    ),
-    expected_output="The output consists of a detailed patient profile, which includes demographic information such as name, age, gender, e.t.c."
-    "It provides a symptom report that captures the nature of the symptoms, including their onset, duration, severity,"
-    "and associated factors. The output also includes a medical history section with past conditions, surgeries, allergies,"
-    "and current medications. Additionally, it records lifestyle factors such as diet, exercise, and sleep patterns."
-    "Any other relevant details provided by the patient are also included."
-    # "Use this pdf tools=[symptom_search_tool] and see possibly questions you can ask based on different symptoms"
-    "Saves the detailed patient profile",
-    # agent=Nurse,
-    agent=Nurse,
-    tools=[prompt_tool, profile_tool],
-    # tools=[prompt_tool, file_save_tool],
-    # output_file='outputs/patient_profile.txt',
-)
 
 """Task: Diagnostic_Analysis"""
 
@@ -364,8 +317,8 @@ def get_med_crew():
     agents=[Diagnostic, Treatment_Recommender, Pharm, Nutritionist, Health_Coach, Health_Expert, Health_Educate, Documentation],
     tasks=[Diagnostic_Analysis, Treatment_Plan, Pharma, Nutrition, Health_Well_Advisor,
            Preventive_Advisor, Health_Education, Document],
-    manager_llm= llm,
-    # process=Process.sequential,
+    # manager_llm= llm,
+    process=Process.sequential,
     verbose=True,
     full_output=True,
     # memory=True,
