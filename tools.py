@@ -36,7 +36,7 @@ rag_tool = RagTool(config=dict(
 )
 
 symptom_search_tool = PDFSearchTool(
-    pdf="/notebooks/Docs/Symptom-collection.pdf",
+    pdf="./Docs/Symptom_collection.pdf",
     config=dict(
         llm=dict(provider="ollama", config=dict(model="llama3.1")),
         embedder=dict(provider="ollama", config=dict(model="nomic-embed-text")),
@@ -44,7 +44,7 @@ symptom_search_tool = PDFSearchTool(
 )
 
 diagonise_search_tool = PDFSearchTool(
-    pdf="/notebooks/Docs/Oxford-Handbook-of-Clinical-Diagnosis.pdf",
+    pdf="./Docs/Oxford-Handbook-of-Clinical-Diagnosis.pdf",
     config=dict(
         llm=dict(provider="ollama", config=dict(model="llama3.1")),
         embedder=dict(provider="ollama", config=dict(model="nomic-embed-text")),
@@ -52,7 +52,7 @@ diagonise_search_tool = PDFSearchTool(
 )
 
 pain_search_tool = PDFSearchTool(
-    pdf="/notebooks/Docs/oxford-handbook-of-pain-management.pdf",
+    pdf="./Docs/oxford-handbook-of-pain-management.pdf",
     config=dict(
         llm=dict(provider="ollama", config=dict(model="llama3.1")),
         embedder=dict(provider="ollama", config=dict(model="nomic-embed-text")),
@@ -60,7 +60,7 @@ pain_search_tool = PDFSearchTool(
 )
 
 treatment_search_tool = PDFSearchTool(
-    pdf="/notebooks/Docs/Oxford-Handbook-of-Practical-Drug-Therapy.pdf",
+    pdf="./Docs/Oxford-Handbook-of-Practical-Drug-Therapy.pdf",
     config=dict(
         llm=dict(provider="ollama", config=dict(model="llama3.1")),
         embedder=dict(provider="ollama", config=dict(model="nomic-embed-text")),
@@ -68,7 +68,7 @@ treatment_search_tool = PDFSearchTool(
 )
 
 medication_search_tool = PDFSearchTool(
-    pdf="/notebooks/Docs/OXFORD-HANDBOOK-OF-CLINICAL-PHARMACY.pdf",
+    pdf="./Docs/OXFORD-HANDBOOK-OF-CLINICAL-PHARMACY.pdf",
     config=dict(
         llm=dict(provider="ollama", config=dict(model="llama3.1")),
         embedder=dict(provider="ollama", config=dict(model="nomic-embed-text")),
@@ -76,7 +76,7 @@ medication_search_tool = PDFSearchTool(
 )
 
 nutrition_search_tool = PDFSearchTool(
-    pdf="/notebooks/Docs/Oxford-Handbook-of-Nutrition-and-Dietetics.pdf",
+    pdf="./Docs/Oxford-Handbook-of-Nutrition-and-Dietetics.pdf",
     config=dict(
         llm=dict(provider="ollama", config=dict(model="llama3.1")),
         embedder=dict(provider="ollama", config=dict(model="nomic-embed-text")),
@@ -84,7 +84,7 @@ nutrition_search_tool = PDFSearchTool(
 )
 
 health_search_tool = PDFSearchTool(
-    pdf="/notebooks/Docs/Health-and-Wellness.pdf",
+    pdf="./Docs/Health-and-Wellness.pdf",
     config=dict(
         llm=dict(provider="ollama", config=dict(model="llama3.1")),
         embedder=dict(provider="ollama", config=dict(model="nomic-embed-text")),
@@ -92,7 +92,7 @@ health_search_tool = PDFSearchTool(
 )
 
 preventive_search_tool = PDFSearchTool(
-    pdf="/notebooks/Docs/Guidelines-for-preventive-activities.pdf",
+    pdf="./Docs/Guidelines-for-preventive-activities.pdf",
     config=dict(
         llm=dict(provider="ollama", config=dict(model="llama3.1")),
         embedder=dict(provider="ollama", config=dict(model="nomic-embed-text")),
@@ -100,7 +100,7 @@ preventive_search_tool = PDFSearchTool(
 )
 
 educate_search_tool = PDFSearchTool(
-    pdf="/notebooks/Docs/Oxford-Handbook-of-Public-Health-Practice.pdf",
+    pdf="./Docs/Oxford-Handbook-of-Public-Health-Practice.pdf",
     config=dict(
         llm=dict(provider="ollama", config=dict(model="llama3.1")),
         embedder=dict(provider="ollama", config=dict(model="nomic-embed-text")),
