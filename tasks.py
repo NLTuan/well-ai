@@ -1,7 +1,7 @@
 from crewai import Task
 from agents import Nurse, Diagnostic, Treatment_Recommender, Pharm, Nutritionist, Health_Coach
 from agents import Health_Expert, Health_Educate, Documentation
-from tasks import prompt_tool, profile_tool
+from tools import prompt_tool, profile_tool
 
 """### Tasks
 
