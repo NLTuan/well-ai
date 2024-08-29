@@ -5,35 +5,11 @@ from crewai import Agent, Task, Crew, Process
 from langchain_community.llms.ollama import Ollama
 from tools import diagonise_search_tool, pain_search_tool, treatment_search_tool, medication_search_tool
 from tools import nutrition_search_tool, health_search_tool, preventive_search_tool, educate_search_tool
-from tools import rag_tool, profile_tool, read_profile_tool
-from tools import prompt_tool, profile_tool
+from tools import rag_tool, read_profile_tool
 
 
 ### Agents
-"""### Virtual Nurse Agent
-The AI agent functions as a virtual nurse designed to interact with patients and gather detailed information about their symptoms. It engages in conversations to understand the patient's condition, ask relevant questions, and record their responses for further analysis by healthcare professionals.
-"""
 llm = Ollama(model='llama3.1')
-Nurse = Agent(
-    role="Symptom Collection Specialist",
-
-    goal="To engage patients in a empathetic and supportive conversation,"
-    "gathering accurate and comprehensive symptom information to inform healthcare providers' diagnoses and treatment decisions.",
-
-    backstory="You are modeled after a seasoned nurse with extensive experience in primary care."
-    "Been trained on a wide range of medical conditions and symptoms,"
-    "allowing you to ask pertinent questions and recognize key details."
-    "You effectively elicit and document a comprehensive list of symptoms gathered from patients, ensuring the information is precise and thorough."
-    "This will help other agents in diagnosing and treating the patient more efficiently."
-    "Your persona is designed to be empathetic and attentive, reflecting a caring and professional demeanor."
-    "you are equipped with a robust knowledge base to handle diverse medical queries"
-    "and provide a supportive conversational experience.",
-
-    allow_delegation=False,
-	  verbose=True,
-    llm=llm,
-    # tools=[symptom_search_tool]
-)
 
 """### Diagnostic Agent
 This AI agent specializes in analyzing symptom data to suggest possible diagnoses. It leverages advanced medical knowledge and algorithms to correlate patient symptoms with potential conditions, providing a list of likely diagnoses that can guide further treatment.
@@ -54,7 +30,7 @@ Diagnostic = Agent(
     allow_delegation=False,
     verbose=True,
     llm=llm,
-    tools=[read_profile_tool, diagonise_search_tool, pain_search_tool]
+    tools=[read_profile_tool, diagonise_search_tool]
 )
 
 """## Treatment Recommendation Agent
@@ -167,7 +143,7 @@ Health_Expert = Agent(
     allow_delegation=False,
 	  verbose=True,
     llm=llm,
-    tools=[profile_tool,preventive_search_tool]
+    tools=[read_profile_tool,preventive_search_tool]
 )
 
 """### Health Education Agent
@@ -213,36 +189,13 @@ Documentation = Agent(
 )
 
 """### Tasks
-
-Task: Symptom Collection
 """
-
-Symptom_Collect = Task(
-    description=(
-        "Given the patients input: {input}, this agent interacts with patients to collect detailed information about their symptoms,"
-        "medical history, and any other relevant health details. It uses conversational techniques to gather comprehensive data,"
-        "ensuring all aspects of the patient’s condition are recorded."
-        "Saves the comprehensive data gotten from the patient"
-    ),
-    expected_output="The output consists of a detailed patient profile, which includes demographic information such as name, age, gender, e.t.c."
-    "It provides a symptom report that captures the nature of the symptoms, including their onset, duration, severity,"
-    "and associated factors. The output also includes a medical history section with past conditions, surgeries, allergies,"
-    "and current medications. Additionally, it records lifestyle factors such as diet, exercise, and sleep patterns."
-    "Any other relevant details provided by the patient are also included."
-    # "Use this pdf tools=[symptom_search_tool] and see possibly questions you can ask based on different symptoms"
-    "Saves the detailed patient profile",
-    # agent=Nurse,
-    agent=Nurse,
-    tools=[prompt_tool, profile_tool],
-    # tools=[prompt_tool, file_save_tool],
-    # output_file='outputs/patient_profile.txt',
-)
 
 """Task: Diagnostic_Analysis"""
 
 Diagnostic_Analysis = Task(
     description=(
-        "Given the patient's symptoms: {symptoms} and medical data gotten from the Symptom Collection Specialist i.e the Nurse agent, this agent analyzes the information using advanced diagnostic algorithms."
+        "Given the patient's symptoms: {symptoms}, this agent analyzes the information using advanced diagnostic algorithms."
         "It evaluates the symptoms, considers potential underlying causes, and cross-references with medical knowledge to suggest possible"
         "diagnoses. The task is to provide a differential diagnosis that outlines several possible conditions, ranked by likelihood. This agent works hand in hand with the Nurse agent"
     ),
@@ -261,7 +214,7 @@ Diagnostic_Analysis = Task(
 
 Treatment_Plan = Task(
     description=(
-        "Given the diagnosed conditions from the Diagnostic Specialist, the detailed patient profile and symptom from the Nurse Agent, in addition with the patient's input,"
+        "Given the diagnosis: {diagnosis}, the detailed patient profile and symptom from the Nurse Agent, in addition with the patient's input,"
         "this agent formulates a comprehensive treatment plan. The agent considers the patient's diagnosis, medical history, and any relevant"
         "lifestyle factors to recommend medications, therapies, and other treatment options. This agent works hand in hand with the Nurse and Diagnostic specialist agent."
     ),
@@ -279,7 +232,7 @@ Treatment_Plan = Task(
 
 Pharma = Task(
     description=(
-        "This agent receives the treatment plan from the Diagnostic and Treatment Specialist and recommends specific medications."
+        "This agent receives the diagnosis: {diagnosis} and treatment plan from the Treatment Specialist and recommends specific medications."
         "It takes into account the patient's symptoms, diagnosis, and any potential drug interactions"
         "to provide safe and effective medication options."
     ),
@@ -292,7 +245,7 @@ Pharma = Task(
 
 Nutrition = Task(
     description=(
-        "This agent receives the symptom report and treatment plan from the Diagnostic and Treatment Specialist. It is responsible for creating personalized dietary recommendations and meal plans based on the patient’s symptoms, health conditions, and overall treatment goals."
+        "This agent receives the diagnosis: {diagnosis} and treatment plan from the Treatment Specialist. It is responsible for creating personalized dietary recommendations and meal plans based on the patient’s symptoms, health conditions, and overall treatment goals."
     ),
     expected_output="The agent provides a tailored meal plan that includes specific dietary recommendations, such as food types, portion sizes, and meal timings, aligned with the patient's health conditions and treatment goals. It also includes guidelines for balanced nutrition, highlighting key nutrients and dietary adjustments needed to support the patient's health. The output features recipes or meal ideas that adhere to the recommended diet and any necessary adjustments for allergies or dietary restrictions. Additionally, the agent offers tips for incorporating these dietary changes into daily life, including strategies for managing eating habits and maintaining nutritional balance.",
     agent=Nutritionist,
@@ -303,7 +256,7 @@ Nutrition = Task(
 
 Health_Well_Advisor = Task(
     description=(
-        "This agent uses the diagnostic information and treatment plans from the Diagnostic and Treatment Specialist and the preventive measures from the Preventive Health Advisor to provide comprehensive guidance on overall health and wellness. It focuses on enhancing the patient’s well-being through lifestyle recommendations, stress management, and other wellness strategies."
+        "This agent uses the diagnostis: {diagnosis}  and treatment plans from the Treatment Specialist and the preventive measures from the Preventive Health Advisor to provide comprehensive guidance on overall health and wellness. It focuses on enhancing the patient’s well-being through lifestyle recommendations, stress management, and other wellness strategies."
     ),
     expected_output="The agent provides a detailed wellness plan that includes recommendations for lifestyle changes such as physical activity, stress management techniques, and sleep improvement strategies. It offers advice on maintaining mental and emotional health, including coping mechanisms and relaxation exercises. The output also includes suggestions for integrating these wellness practices into daily routines, with actionable steps for improving overall quality of life. Additionally, it provides motivational tips and resources for ongoing support, such as links to wellness programs or apps that can help the patient track their progress and stay engaged with their health goals.",
     agent=Health_Coach,
@@ -314,7 +267,7 @@ Health_Well_Advisor = Task(
 
 Preventive_Advisor = Task(
     description=(
-        "This agent uses the diagnosis and treatment recommendations from the Diagnostic and Treatment Specialist with the Medication Advisor to provide guidance on preventive measures, screenings, and vaccinations. It aims to help patients avoid future health issues through proactive care strategies."
+        "This agent uses the diagnosis: {diagnosis} and treatment recommendations from the Diagnostic and Treatment Specialist with the Medication Advisor to provide guidance on preventive measures, screenings, and vaccinations. It aims to help patients avoid future health issues through proactive care strategies."
     ),
     expected_output="The output includes personalized recommendations for preventive measures, such as lifestyle changes or new health habits. It provides suggestions for specific tests or screenings based on the diagnosis and risk factors. The agent also recommends vaccinations, including the types, schedules, and any relevant considerations. Furthermore, it outlines a health maintenance plan that details ongoing preventive care activities and monitoring.",
     agent=Health_Expert,
@@ -325,7 +278,7 @@ Preventive_Advisor = Task(
 
 Health_Education = Task(
     description=(
-        "Given the patient’s health conditions, treatment plans, and self-care needs gotten from the nurse, the Diagnostic and Treatment Specialist,"
+        "Given the patient’s diagnosis: {diagnosis}, treatment plans, and self-care needs gotten from the nurse, the Diagnostic and Treatment Specialist,"
         "this agent provides customized educational content. It selects the most relevant resources from a wide range of formats,"
         "including interactive modules, videos, and articles, to help the patient understand their health situation and how to manage it."
     ),
@@ -341,7 +294,7 @@ Health_Education = Task(
 """Task: Documentation"""
 
 Document = Task(
-    description=("The Documentation and Verification Agent listens to and records all interactions between the patient and the other agents i.e the Symptom Collection Specialist, Diagonistic Specialist, Treatment Specialist, Medication Advisor, Personalized Nutrition Advisor, Health and Wellness Advisor, Preventive Health Advisor, Health Educator."
+    description=("The Documentation and Verification Agent reports the diagnosis: {diagnosis} and listens to and records all interactions between the patient and the other agents i.e the Symptom Collection Specialist, Treatment Specialist, Medication Advisor, Personalized Nutrition Advisor, Health and Wellness Advisor, Preventive Health Advisor, Health Educator."
                  "It organizes this information into a clear, patient-friendly document that highlights key points, such as critical diagnoses,"
                  "treatment plans, medication instructions, lifestyle advice, and follow-up recommendations.This agent work hand in hand with everyother agent to collect detailed report"
                  "Simultaneously, the agent runs a background check on all advice given by the agents to ensure it is accurate, evidence-based,"
@@ -360,19 +313,16 @@ Document = Task(
 
 """Creating the crew"""
 def get_med_crew():
-    return Crew(
-    agents=[Diagnostic, Treatment_Recommender, Pharm, Nutritionist, Health_Coach, Health_Expert, Health_Educate, Documentation],
-    tasks=[Diagnostic_Analysis, Treatment_Plan, Pharma, Nutrition, Health_Well_Advisor,
+    crews = (Crew(agents = [Diagnostic],
+        tasks = [Diagnostic_Analysis],
+        verbose=True
+    ),
+        Crew(
+    agents=[Treatment_Recommender, Pharm, Nutritionist, Health_Coach, Health_Expert, Health_Educate, Documentation],
+    tasks=[Treatment_Plan, Pharma, Nutrition, Health_Well_Advisor,
            Preventive_Advisor, Health_Education, Document],
-    manager_llm= llm,
-    # process=Process.sequential,
+    process=Process.sequential,
     verbose=True,
-    full_output=True,
-    # memory=True,
-    # embedder={
-    #             "provider": "ollama",
-    #             "config":{
-    #                     "model": 'nomic-embed-text'
-    #             }
-    #         }
-)
+        ))
+    return crews
+    
